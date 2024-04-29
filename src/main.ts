@@ -1,10 +1,11 @@
+import fs from "fs";
 import { config } from "dotenv";
-import {GoogleGenerativeAI} from "@google/generative-ai"
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 config();
 const API_KEY = process.env.API_KEY;
 
-const genAI = new GoogleGenerativeAI(API_KEY ?? '');
+const genAI = new GoogleGenerativeAI(API_KEY ?? "");
 
 async function run() {
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
@@ -13,7 +14,12 @@ async function run() {
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const text = response.text();
-  console.log(text);
+
+  fs.writeFile("suggestions.txt", text, (err) => {
+    if (err) {
+      return;
+    }
+  });
 }
 
 run();
